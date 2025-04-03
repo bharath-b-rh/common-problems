@@ -16,8 +16,7 @@ func revNum() {
 
 	number = input
 	for number > 0 {
-		val := number % 10
-		reverse = reverse*10 + val
+		reverse = reverse*10 + (number % 10)
 		number /= 10
 	}
 

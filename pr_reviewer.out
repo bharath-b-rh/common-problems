@@ -1,0 +1,169 @@
+
+    review:
+      - file: fibonacci.go
+        relevant_lines: |
+          + func fibonacci() {
+          + 	var (
+          + 		input int
+          + 		a     int = 0
+          + 		b     int = 1
+          + 	)
+          +
+          + 	fmt.Println("Enter the required number of fibonacci sequence")
+          + 	if _, err := fmt.Scanf("%d", &input); err != nil {
+          + 		panic(err)
+          + 	}
+          +
+          + 	fmt.Printf("%d, %d", a, b)
+          + 	for i := 2; i < input; i++ {
+          + 		fmt.Printf(", %d", a+b)
+          + 		a, b = b, a+b
+          + 	}
+          + 	fmt.Print("\n")
+        suggestion: |
+          This is a simple implementation of a Fibonacci sequence generator. It would be beneficial to add unit tests to ensure the function behaves as expected. Here's an example of how you could test this function:
+
+          ```go
+          func TestFibonacci(t *testing.T) {
+              testCases := []struct {
+                  input    int
+                  expected string
+              }{
+                  {1, "0"},
+                  {2, "0, 1"},
+                  {3, "0, 1, 1"},
+                  {4, "0, 1, 1, 2"},
+                  {5, "0, 1, 1, 2, 3"},
+              }
+
+              for _, tc := range testCases {
+                  t.Run(fmt.Sprintf("Test case %d", tc.input), func(t *testing.T) {
+                      var buf bytes.Buffer
+                      fibonacci(&buf, tc.input)
+                      if buf.String() != tc.expected {
+                          t.Errorf("Expected %q, got %q", tc.expected, buf.String())
+                      }
+                  })
+              }
+          }
+          ```
+
+      - file: main.go
+        relevant_lines: |
+          + 	fmt.Println("What would you like to find?")
+          + 	fmt.Println("\t1. Reverse of a given number")
+          + 	fmt.Println("\t2. Fibonacci series up to the given term")
+          + 	fmt.Println("\t3. Given string is a palindrome")
+          +
+          + 	fmt.Print("\n")
+          + 	if _, err := fmt.Scanf("%d", &input); err != nil {
+          + 		panic("failed to read input: " + err.Error())
+          + 	}
+          + 	fmt.Print("\n")
+          +
+          + 	switch input {
+          + 	case 1:
+          + 		revNum()
+          + 	case 2:
+          + 		fibonacci()
+          + 	case 3:
+          + 		palindrome()
+          + 	default:
+          + 		panic("invalid input")
+          + 	}
+        suggestion: |
+          This is a simple command line application that allows the user to choose between three different functionalities. It would be beneficial to add more error handling and validation for the user input. For example, you could check if the input is a valid number and handle the case where the user enters something other than 1, 2, or 3.
+
+      - file: palindrome.go
+        relevant_lines: |
+          + func palindrome() {
+          + 	var (
+          + 		input string
+          + 	)
+          +
+          + 	fmt.Println("Enter a string")
+          + 	if _, err := fmt.Scanf("%s", &input); err != nil {
+          + 		panic(err)
+          + 	}
+          + 	reverse := []rune(input)
+          + 	for i, j := 0, len(reverse)-1; i < j; i, j = i+1, j-1 {
+          + 		reverse[i], reverse[j] = reverse[j], reverse[i]
+          + 	}
+          +
+          + 	fmt.Printf("The reverse of %s is %s", input, string(reverse))
+          + 	if input == string(reverse) {
+          + 		fmt.Print(", and is a palindrome\n")
+          + 	} else {
+          + 		fmt.Print(", and is not a palindrome\n")
+          + 	}
+        suggestion: |
+          This is a simple implementation of a palindrome checker. It would be beneficial to add unit tests to ensure the function behaves as expected. Here's an example of how you could test this function:
+
+          ```go
+          func TestPalindrome(t *testing.T) {
+              testCases := []struct {
+                  input    string
+                  expected bool
+              }{
+                  {"racecar", true},
+                  {"hello", false},
+                  {"level", true},
+              }
+
+              for _, tc := range testCases {
+                  t.Run(fmt.Sprintf("Test case %s", tc.input), func(t *testing.T) {
+                      if palindrome(tc.input) != tc.expected {
+                          t.Errorf("Expected %t, got %t", tc.expected, palindrome(tc.input))
+                      }
+                  })
+              }
+          }
+          ```
+
+      - file: rev_num.go
+        relevant_lines: |
+          + func revNum() {
+          + 	var (
+          + 		input, number, reverse int
+          + 	)
+          +
+          + 	fmt.Println("Enter a number to find the reverse of it")
+          + 	if _, err := fmt.Scanf("%d", &input); err != nil {
+          + 		panic(err)
+          + 	}
+          +
+          + 	number = input
+          + 	for number > 0 {
+          + 		val := number % 10
+          + 		reverse = reverse*10 + val
+          + 		number /= 10
+          + 	}
+          +
+          + 	fmt.Println("The reverse of", input, "is", reverse)
+        suggestion: |
+          This is a simple implementation of a number reverser. It would be beneficial to add unit tests to ensure the function behaves as expected. Here's an example of how you could test this function:
+
+          ```go
+          func TestRevNum(t *testing.T) {
+              testCases := []struct {
+                  input    int
+                  expected int
+              }{
+                  {123, 321},
+                  {100, 1},
+                  {987, 789},
+              }
+
+              for _, tc := range testCases {
+                  t.Run(fmt.Sprintf("Test case %d", tc.input), func(t *testing.T) {
+                      if revNum(tc.input) != tc.expected {
+                          t.Errorf("Expected %d, got %d", tc.expected, revNum(tc.input))
+                      }
+                  })
+              }
+          }
+          ```
+
+    summary:
+      This PR adds three new functionalities to the command line application: reversing a number, generating a Fibonacci sequence up to a given term, and checking if a string is a palindrome. The code is simple and easy to understand. However, it lacks proper error handling and validation for user input. Additionally, there are no unit tests, which makes it hard to ensure the code behaves as expected. It would be beneficial to add more error handling, validation, and unit tests to ensure the code is robust and reliable.
+
